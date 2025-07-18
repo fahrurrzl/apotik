@@ -15,11 +15,16 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('admin.products.index')" :active="request()->routeIs('admin.products.index')">
-                        {{ __('Manage Products') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.index')">
-                        {{ __('Manage Categories') }}
+                    @role('owner')
+                        <x-nav-link :href="route('admin.products.index')" :active="request()->routeIs('admin.products.index')">
+                            {{ __('Manage Products') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.index')">
+                            {{ __('Manage Categories') }}
+                        </x-nav-link>
+                    @endrole
+                    <x-nav-link :href="route('product-transactions.index')" :active="request()->routeIs('product-transactions.index')">
+                        {{ Auth::user()->hasRole('owner') ? __('Apotik Orders') : __('My Transactions') }}
                     </x-nav-link>
                 </div>
             </div>
@@ -84,11 +89,16 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('admin.products.index')" :active="request()->routeIs('admin.products.index')">
-                {{ __('Manage Products') }}
-            </x-responsive-nav-link>
+            @role('owner')
+                <x-responsive-nav-link :href="route('admin.products.index')" :active="request()->routeIs('admin.products.index')">
+                    {{ __('Manage Products') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.index')">
+                    {{ __('Manage Categories') }}
+                </x-responsive-nav-link>
+            @endrole
             <x-responsive-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.index')">
-                {{ __('Manage Categories') }}
+                {{ Auth::user()->hasRole('owner') ? __('Apotik Orders') : __('My Transactions') }}
             </x-responsive-nav-link>
         </div>
 
