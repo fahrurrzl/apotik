@@ -73,7 +73,22 @@ class CommentController extends Controller
      */
     public function update(Request $request, Comment $comment)
     {
-        //
+        $validated = $request->validate([
+            'comment' => 'required|string|max:255',
+        ]);
+        try {
+            $validated['user_id'] = Auth::user()->id;
+            $validated['product_id'] = $comment->product_id;
+            $comment->update($validated);
+            DB::commit();
+            return redirect()->back()->with('success', 'Comment updated successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $error = ValidationException::withMessages([
+                'system_error' => ['System error!', $e->getMessage()]
+            ]);
+            throw $error;
+        }
     }
 
     /**
@@ -81,6 +96,7 @@ class CommentController extends Controller
      */
     public function destroy(Comment $comment)
     {
-        //
+        $comment->delete();
+        return redirect()->back()->with('success', 'Comment deleted successfully');
     }
 }
