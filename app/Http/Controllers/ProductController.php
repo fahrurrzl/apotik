@@ -42,7 +42,7 @@ class ProductController extends Controller
             'price' => 'required|integer',
             'category_id' => 'required|integer',
             'description' => 'required|string',
-            'photo' => 'required|image|mimes:png,jpg,jpeg,svg',
+            'photo' => 'required|image|mimes:png,jpg,jpeg,svg,webp',
         ]);
         DB::beginTransaction();
 
@@ -51,7 +51,7 @@ class ProductController extends Controller
                 $pathPhoto = $request->file('photo')->store('product_photos', 'public');
                 $validated['photo'] = $pathPhoto;
             }
-            $validated['slug'] = Str::slug($request->name);
+            $validated['slug'] = Str::slug($request->title);
             Product::create($validated);
             DB::commit();
             return to_route('admin.products.index');
@@ -94,7 +94,7 @@ class ProductController extends Controller
             'price' => 'required|integer',
             'category_id' => 'required|integer',
             'description' => 'required|string',
-            'photo' => 'sometimes|image|mimes:png,jpg,jpeg,svg',
+            'photo' => 'required|image|mimes:png,jpg,jpeg,svg,webp',
         ]);
 
         DB::beginTransaction();
@@ -106,7 +106,7 @@ class ProductController extends Controller
                 $photoPath = $request->file('photo')->store('product_photos', 'public');
                 $validated['photo'] = $photoPath;
             }
-            $validated['slug'] = Str::slug($request->name);
+            $validated['slug'] = Str::slug($request->title);
             $product->update($validated);
             DB::commit();
             return to_route('admin.products.index');
