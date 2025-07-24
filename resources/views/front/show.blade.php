@@ -64,27 +64,29 @@
         </div>
 
         <!-- user Reviews -->
-        <div class="flex flex-col gap-2">
-            <p class="text-base leading-7">
-                My kid was happier whenever he is playing
-                without artificial toys, full energy yeah!
-            </p>
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-1.5">
-                    <img src="{{ asset('assets/images/photo.png') }}" class="size-9" alt="">
-                    <p class="text-base font-semibold">
-                        Safira
-                    </p>
-                </div>
-                <div class="flex">
-                    <img src="{{ asset('assets/svgs/star.svg') }}" class="size-[18px]" alt="">
-                    <img src="{{ asset('assets/svgs/star.svg') }}" class="size-[18px]" alt="">
-                    <img src="{{ asset('assets/svgs/star.svg') }}" class="size-[18px]" alt="">
-                    <img src="{{ asset('assets/svgs/star.svg') }}" class="size-[18px]" alt="">
-                    <img src="{{ asset('assets/svgs/star.svg') }}" class="size-[18px]" alt="">
+        @foreach ($product->comments as $comment)
+            <div class="flex flex-col gap-2">
+                <p class="text-base leading-7">
+                    {{ $comment->comment }}
+                </p>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-1.5">
+                        <img src="{{ $comment->user->photo ?? asset('assets/svgs/avatar.svg') }}" class="size-9"
+                            alt="{{ $comment->user->name }}">
+                        <p class="text-base font-semibold">
+                            {{ $comment->user->name }}
+                        </p>
+                    </div>
+                    {{-- <div class="flex">
+                        <img src="{{ asset('assets/svgs/star.svg') }}" class="size-[18px]" alt="">
+                        <img src="{{ asset('assets/svgs/star.svg') }}" class="size-[18px]" alt="">
+                        <img src="{{ asset('assets/svgs/star.svg') }}" class="size-[18px]" alt="">
+                        <img src="{{ asset('assets/svgs/star.svg') }}" class="size-[18px]" alt="">
+                        <img src="{{ asset('assets/svgs/star.svg') }}" class="size-[18px]" alt="">
+                    </div> --}}
                 </div>
             </div>
-        </div>
+        @endforeach
 
         <!-- Price and Add to cart -->
         <div class="flex items-center justify-between">

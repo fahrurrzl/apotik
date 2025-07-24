@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use App\Models\ProductTransaction;
 use App\Models\TransactionDetail;
 use Illuminate\Http\Request;
@@ -43,7 +44,7 @@ class ProductTransactionController extends Controller
         $validated = $request->validate([
             'address' => 'required|string|max:255',
             'post_code' => 'required|integer',
-            'phone_number' => 'required|integer',
+            'phone_number' => 'required|string',
             'prof' => 'required|image|mimes:png,jpg,jpeg,svg,webp',
             'city' => 'required|string|max:255',
             'notes' => 'required|string|max:65535',
@@ -123,10 +124,36 @@ class ProductTransactionController extends Controller
      */
     public function update(Request $request, ProductTransaction $productTransaction)
     {
+        $checkIsPaid = $productTransaction->is_paid;
+        if ($checkIsPaid == 0) {
+            $productTransaction->update([
+                'is_paid' => 1
+            ]);
+        } else if ($checkIsPaid == 1) {
+            $productTransaction->update([
+                'is_paid' => 2
+            ]);
+        } else if ($checkIsPaid == 2) {
+            $productTransaction->update([
+                'is_paid' => 3
+            ]);
+        }
+        return redirect()->back();
+    }
+
+    public function cancel(ProductTransaction $productTransaction)
+    {
         $productTransaction->update([
-            'is_paid' => true
+            'is_paid' => 4
         ]);
         return redirect()->back();
+    }
+
+    public function comment(ProductTransaction $productTransaction)
+    {
+        $product_ids = $productTransaction->transaction_details->pluck('product_id');
+        $products = Product::whereIn('id', $product_ids)->get();
+        return view('admin.product_transactions.comment', compact('products'));
     }
 
     /**

@@ -31,9 +31,9 @@
                                 </p>
                             </div>
                             <span
-                                class="py-1 px-3 rounded-full {{ $transaction->is_paid == 0 ? 'bg-orange-500' : 'bg-green-500' }} text-sm">
+                                class="py-1 px-3 rounded-full {{ $transaction->is_paid == 0 ? 'bg-orange-500' : ($transaction->is_paid == 1 ? 'bg-green-500' : ($transaction->is_paid == 2 ? 'bg-blue-500' : ($transaction->is_paid == 3 ? 'bg-gray-500' : 'bg-red-500'))) }} text-sm">
                                 <p class="text-white">
-                                    {{ $transaction->is_paid == 0 ? 'PENDING' : 'COMPLETED' }}
+                                    {{ $transaction->is_paid == 0 ? 'PENDING' : ($transaction->is_paid == 1 ? 'PROOF ORDER' : ($transaction->is_paid == 2 ? 'SEND' : ($transaction->is_paid == 3 ? 'COMPLETED' : 'CANCEL'))) }}
                                 </p>
                             </span>
                             <div class="flex items-center gap-2">

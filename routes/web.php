@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductTransactionController;
@@ -22,10 +23,14 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    Route::resource('/comments', CommentController::class)->middleware('role:buyer');
+
     Route::resource('/cart', CartController::class)->middleware('role:buyer');
     Route::post('/cart/add/{productId}', [CartController::class, 'store'])->middleware('role:buyer')->name('cart.store');
 
     Route::resource('/product-transactions', ProductTransactionController::class)->middleware('role:owner|buyer');
+    Route::put('/product-transactions/{productTransaction}/cancel', [ProductTransactionController::class, 'cancel'])->middleware('role:owner')->name('product-transactions.cancel');
+    Route::get('/product-transactions/{productTransaction}/comment', [ProductTransactionController::class, 'comment'])->middleware('role:buyer')->name('product-transactions.comment');
 
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('products', ProductController::class)->middleware('role:owner');

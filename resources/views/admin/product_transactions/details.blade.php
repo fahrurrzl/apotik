@@ -30,9 +30,9 @@
                             </p>
                         </div>
                         <span
-                            class="py-1 px-3 rounded-full {{ $product_transaction->is_paid === 0 ? 'bg-orange-500' : 'bg-green-500' }} text-sm">
+                            class="py-1 px-3 rounded-full {{ $product_transaction->is_paid === 0 ? 'bg-orange-500' : ($product_transaction->is_paid === 1 ? 'bg-green-500' : ($product_transaction->is_paid === 2 ? 'bg-blue-500' : ($product_transaction->is_paid === 3 ? 'bg-gray-500' : 'bg-red-500'))) }} text-sm">
                             <p class="text-white">
-                                {{ $product_transaction->is_paid === 0 ? 'PENDING' : 'SUCCESS' }}
+                                {{ $product_transaction->is_paid == 0 ? 'PENDING' : ($product_transaction->is_paid == 1 ? 'PROOF ORDER' : ($product_transaction->is_paid == 2 ? 'SEND' : ($product_transaction->is_paid == 3 ? 'COMPLETED' : 'CANCEL'))) }}
                             </p>
                         </span>
                     </div>
@@ -114,18 +114,60 @@
                     <div>
                         @if (Auth::user()->hasRole('owner'))
                             @if ($product_transaction->is_paid === 0)
-                                <form method="POST"
-                                    action="{{ route('product-transactions.update', $product_transaction) }}">
-                                    @csrf
-                                    @method('PUT')
-                                    <button class="py-2 px-4 rounded-full bg-blue-500 text-white">Proof Order</button>
-                                </form>
+                                <div class="flex items-center gap-2">
+                                    <form method="POST"
+                                        action="{{ route('product-transactions.update', $product_transaction) }}">
+                                        @csrf
+                                        @method('PUT')
+                                        <button class="py-2 px-4 rounded-full bg-blue-500 text-white">Proof
+                                            Order</button>
+                                    </form>
+                                    <form method="POST"
+                                        action="{{ route('product-transactions.cancel', $product_transaction) }}">
+                                        @csrf
+                                        @method('PUT')
+                                        <button class="py-2 px-4 rounded-full bg-red-500 text-white">Cancel</button>
+                                    </form>
+                                </div>
                             @else
-                                <button class="py-2 px-4 rounded-full bg-green-500 text-white">WhatsApp
-                                    Customer</button>
+                                <div class="flex items-center gap-2">
+                                    <button class="py-2 px-4 rounded-full bg-green-500 text-white">WhatsApp
+                                        Customer</button>
+                                    @if ($product_transaction->is_paid === 1)
+                                        <form method="POST"
+                                            action="{{ route('product-transactions.update', $product_transaction) }}">
+                                            @csrf
+                                            @method('PUT')
+                                            <button class="py-2 px-4 rounded-full bg-blue-500 text-white">Send</button>
+                                        </form>
+                                    @endif
+                                    @if ($product_transaction->is_paid === 2)
+                                        <form method="POST"
+                                            action="{{ route('product-transactions.update', $product_transaction) }}">
+                                            @csrf
+                                            @method('PUT')
+                                            <button
+                                                class="py-2 px-4 rounded-full bg-blue-500 text-white">Completed</button>
+                                        </form>
+                                    @endif
+                                </div>
                             @endif
                         @else
-                            <button class="py-2 px-4 rounded-full bg-blue-500 text-white">Contact Admin</button>
+                            <div class="flex items-center gap-2">
+                                <button class="py-2 px-4 rounded-full bg-green-500 text-white">Contact Admin</button>
+                                @if ($product_transaction->is_paid === 2)
+                                    <form method="POST"
+                                        action="{{ route('product-transactions.update', $product_transaction) }}">
+                                        @csrf
+                                        @method('PUT')
+                                        <button class="py-2 px-4 rounded-full bg-blue-500 text-white">Completed</button>
+                                    </form>
+                                @endif
+                                @if ($product_transaction->is_paid === 3)
+                                    <a href="{{ route('product-transactions.comment', $product_transaction) }}"
+                                        class="py-2 px-4 rounded-full bg-blue-500 text-white">Comment</a>
+                                @endif
+                            </div>
                         @endif
                     </div>
 
